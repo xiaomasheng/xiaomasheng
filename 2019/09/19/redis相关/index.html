@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="马笙">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="redis相关">
+  <meta property="og:description" content="技术博客，并发编程，论坛社区。">
+  <meta property="og:site_name" content="马笙的博客">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://xiaomasheng.github.io">
+  
+    <link rel="alternate" href="/atom.xml" title="马笙的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>马笙的博客</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/css/style.light.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/img/default-banner-dark.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">redis相关</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/<your-github-username>">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:<your-email-address>">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By 马笙</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2019-09-19</span>
+            <span class="time">14:56:23</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <h2 id="redis相关"><a href="#redis相关" class="headerlink" title="redis相关"></a>redis相关</h2><p>redis的持久化方案RDB和AOF</p>
+<p>RDB：快照形式，定期把内存中当前时刻的数据保存到磁盘。Redis默认支持的持久化方案。速度快但是服务器断电的时候会丢失部分数据</p>
+<p>AOF形式：append only file。把所有对redis数据库操作的命令，增删改操作的命令。保存到文件中。数据库恢复时把所有的命令执行一遍即可。两种持久化方案同时开启使用AOF文件来恢复数据库.能保证数据的完整性,但是速度慢</p>
+<p>两者如何选择?</p>
+<p>如果你没有数据持久化的需求，可以关闭RDB和AOF方式，这样的话，redis将变成一个纯内存数据库，就像memcache一样</p>
+<p>如果你对数据的完整性要求比较高,那么就选择AOF</p>
+<p>官方的建议是两个同时使用。这样可以提供更可靠的持久化方案。<br>————————————————</p>
+<p>redis的优点</p>
+<p>①读写速度快. 数据存放在内存中,数据结构类似于HashMap，HashMap的优势就是查找和操作的时间复杂度都是O(1)</p>
+<p>②支持丰富的数据类型,string,hash,list,set,sorted</p>
+<p>③支持事务,而且操作都是原子性.(原子性就是事务要么操作成功,要么失败回滚)</p>
+<p>(并不是像oracle一样绝对支持事务的，有个功能，冤有头债有主，即便有一个错误了，其余还是会执行。)</p>
+<p>④丰富的特性:可以用于缓存,消息队列,按key设置过期时间,到期后自动删除</p>
+<p>⑤支持数据持久化(将内存数据持久化到磁盘),支持AOF和RDB两种持久化方式,从而进行数据恢复操作,可以有效地防止数据丢失</p>
+<p>⑥支持主从(master-slave)复制来实现数据备份,主机会自动将数据同步到从机<br>————————————————</p>
+<p>redis和memcached的区别</p>
+<p>(1) memcached所有的值均是简单的字符串，redis支持更为丰富的数据类型</p>
+<p>(2)由于Redis只使用单核，而Memcached可以使用多核，所以平均每一个核上Redis在存储小数据时比Memcached性能更高。而在100k以上的数据时，Memcached性能要高于Redis，虽然Redis最近也在存储大数据的性能上进行优化，但是比起Memcached，还是稍有逊色。</p>
+<p>(3) 虽然redis和Memcached都是内存数据库,但是redis可以持久化其数据,Memcached不支持持久化. (Redis并不是所有的数据都一直存储在内存中的，当物理内存用完时，Redis可以将一些很久没用到的value交换到磁盘，但memcached超过内存比例会抹掉前面的数据。)所以memcached挂掉后(比如说断电,重启系统等等)，数据不可恢复；redis数据丢失后可以通过AOF恢复</p>
+<p>(4)分布式存储</p>
+<p>  Memcached是全内存的数据缓冲系统，Redis虽然支持数据的持久化，但是全内存毕竟才是其高性能的本质。作为基于内存的存储系统来说，机器物理内存的大小就是系统能够容纳的最大数据量。如果需要处理的数据量超过了单台机器的物理内存大小，就需要构建分布式集群来扩展存储能力。</p>
+<p>  Memcached本身并不支持分布式，因此只能在客户端通过像一致性哈希这样的分布式算法来实现Memcached的分布式存储，关于分布式一致性哈希算法见总结：分布式一致性hash算法。当客户端向Memcached集群发送数据之前，首先会通过内置的分布式算法计算出该条数据的目标节点，然后数据会直接发送到该节点上存储。但客户端查询数据时，同样要计算出查询数据所在的节点，然后直接向该节点发送查询请求以获取数据。</p>
+<p>  相较于Memcached只能采用客户端实现分布式存储，Redis更偏向于在服务器端构建分布式存储，但没有采用一致性哈希，关于Redis集群分析见总结：分布式缓存Redis之cluster集群。最新版本的Redis已经支持了分布式存储功能。Redis Cluster是一个实现了分布式且允许单点故障的Redis高级版本，它没有中心节点，具有线性可伸缩的功能。为了保证单点故障下的数据可用性，Redis Cluster引入了Master节点和Slave节点。在Redis Cluster中，每个Master节点都会有对应的两个用于冗余的Slave节点。这样在整个集群中，任意两个节点的宕机都不会导致数据的不可用。当Master节点退出后，集群会自动选择一个Slave节点成为新的Master节点。</p>
+<p>redis支持master-slave复制模式</p>
+<p>memcache可以使用一致性hash做分布式</p>
+<pre><code>如果有持久化方面的需求或者对数据类型和处理有要求的应该选择redis;如果是简单的key/value存储可以考虑memcached
+内存管理机制</code></pre><p>Memcached主要的cache机制是LRU（最近最少使用Least Recently Used）算法+超时失效。</p>
+<p>Redis采用的是包装的mallc/free，相较于Memcached的内存管理方法来说，要简单很多。<br>redis的单线程为什么那么快</p>
+<p>redis分客户端和服务端，一次完整的redis请求事件有多个阶段（客户端到服务器的网络连接–&gt;redis读写事件发生–&gt;redis服务端的数据处理（单线程）–&gt;数据返回）。平时所说的redis单线程模型，本质上指的是服务端的数据处理</p>
+<p>客户端和服务器是socket通信方式，socket服务端监听可同时接受多个客户端请求也就是说，redis服务同时面对多个redis客户端连接请求，而redis服务本身是单线程运行。</p>
+<p>redis 核心就是 如果我的数据全都在内存里，我单线程的去操作 就是效率最高的，为什么呢，因为多线程的本质就是 CPU 模拟出来多个线程的情况，这种模拟出来的情况就有一个代价，就是上下文的切换，对于一个内存的系统来说，它没有上下文的切换就是效率最高的。redis 用 单个CPU 绑定一块内存的数据，然后针对这块内存的数据进行多次读写的时候，都是在一个CPU上完成的，所以它是单线程处理这个事。在内存的情况下，这个方案就是最佳方案</p>
+<p>使用单线程的方式是无法发挥多核CPU 性能, 为了充分利用多核CPU，常常在一台server上会启动多个实例(即多个redis进程)。而为了减少切换的开销，有必要为每个实例(redis进程)指定其所运行的CPU</p>
+<p>而且因为redis是单线程的,所以不用去考虑各种锁的问题，不存在加锁释放锁操作，没有因为可能出现死锁而导致的性能消耗；</p>
+<p>总结:CPU不是Redis的瓶颈，Redis的瓶颈最有可能是机器内存的大小或者网络带宽。既然单线程容易实现，而且CPU不会成为瓶颈，那就顺理成章地采用单线程的方案了（毕竟采用多线程会有很多麻烦！）<br>redis的主从结构</p>
+<p>主从结构一是可以进行冗余备份,二是可以实现读写分离</p>
+<p>主从复制</p>
+<p>冗余备份(还可以称为:主从复制,数据冗余,数据备份,可以实现容灾快速恢复)</p>
+<p>持久化保证了即使redis服务重启也会丢失数据，因为redis服务重启后会将硬盘上持久化的数据恢复到内存中，但是当redis服务器的硬盘损坏了可能会导致数据丢失，如果通过redis的主从复制机制就可以避免这种单点故障. 例如:我们搭建一个主叫做redis0,两个从,分别叫做redis1和redis2,即使一台redis服务器宕机其它两台redis服务也可以继续提供服务。主redis中的数据和从redis上的数据保持实时同步，当主redis写入数据时通过主从复制机制会复制到两个从redis服务上。</p>
+<p>①一个Master可以有多个Slave,不仅主服务器可以有从服务器，从服务器也可以有自己的从服务器</p>
+<p>②复制在Master端是非阻塞模式的，这意味着即便是多个Slave执行首次同步时，Master依然可以提供查询服务；</p>
+<p>③复制在Slave端也是非阻塞模式的：如果你在redis.conf做了设置，Slave在执行首次同步的时候仍可以使用旧数据集提供查询；你也可以配置为当Master与Slave失去联系时，让Slave返回客户端一个错误提示；</p>
+<p>④当Slave要删掉旧的数据集，并重新加载新版数据时，Slave会阻塞连接请求<br>读写分离</p>
+<p>主从架构中，可以考虑关闭主服务器的数据持久化功能，只让从服务器进行持久化，这样可以提高主服务器的处理性能。从服务器通常被设置为只读模式，这样可以避免从服务器的数据被误修改。<br>解决redis主从结构宕机</p>
+<p>如果在主从复制架构中出现宕机的情况，需要分情况看：</p>
+<p>从Redis宕机</p>
+<p>a)这个相对而言比较简单，在Redis中从库重新启动后会自动加入到主从架构中，自动完成同步数据；</p>
+<p>b)        问题？ 如果从库在断开期间，主库的变化不大，从库再次启动后，主库依然会将所有的数据做RDB操作吗？还是增量更新？（从库有做持久化的前提下）</p>
+<p>不会的，因为在Redis2.8版本后就实现了，主从断线后恢复的情况下实现增量复制。</p>
+<p>主Redis宕机</p>
+<p>手动恢复</p>
+<p> i.   第一步，在从数据库中执行SLAVEOFNO ONE命令，断开主从关系并且将从库提升为主库继续服务；</p>
+<p>ii.第二步，将主库重新启动后，执行SLAVEOF命令，将其设置为其他库的从库，这时数据就能更新回来；</p>
+<p>哨兵功能自动恢复</p>
+<p>通过sentinel模式启动redis后，自动监控master/slave的运行状态, 已经被集成在redis2.4+的版本中</p>
+<p>如果Master异常，则会进行Master-Slave切换，将其中一个Slave作为Master，将之前的Master作为Slave </p>
+<p>基本原理是：心跳机制+投票裁决</p>
+<p>每个sentinel会向其它sentinal、master、slave定时发送消息，以确认对方是否“活”着，如果发现对方在指定时间（可配置）内未回应，则暂时认为对方已挂（所谓的“主观认为宕机” Subjective Down，简称SDOWN）。</p>
+<p>若”哨兵群”中的多数sentinel，都报告某一master没响应，系统才认为该master”彻底死亡”(即：客观上的真正down机，Objective Down，简称ODOWN)，通过一定的vote算法，从剩下的slave节点中，选一台提升为master，然后自动修改相关配置。</p>
+<p>缓存穿透</p>
+<p>缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时需要从数据库查询，查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到数据库去查询，造成缓存穿透。</p>
+<p>解决办法</p>
+<p>①对所有可能查询的参数以hash形式存储，在控制层先进行校验，不符合则丢弃。还有最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。</p>
+<p>②也可以采用一个更为简单粗暴的方法，如果一个查询返回的数据为空（不管是数 据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<p>缓存雪崩</p>
+<p>如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。</p>
+<p>解决办法</p>
+<p>①在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。</p>
+<p>②可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存</p>
+<p>③不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀. 比如我们可以在原有的失效时间基础上增加一个随机值，比如1-5分钟随机，这样每一个缓存的过期时间的重复率就会降低，就很难引发集体失效的事件</p>
+<p>④做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。</p>
+<p>缓存击穿</p>
+<p>缓存被“击穿”的问题，这个和缓存雪崩的区别在于这里针对<strong>某一key</strong>缓存，前者则是<strong>很多key</strong>。缓存预热</p>
+<p>缓存预热就是系统上线后，提前将相关的缓存数据直接加载到缓存系统。避免在用户请求的时候，先查询数据库，然后再将数据缓存的问题！用户直接查询事先被预热的缓存数据！</p>
+<p> 缓存预热解决方案：</p>
+<p>（1）直接写个缓存刷新页面，上线时手工操作下；</p>
+<p>（2）数据量不大，可以在项目启动的时候自动进行加载；</p>
+<p>（3）定时刷新缓存；</p>
+<p>缓存更新</p>
+<p>我们知道通过expire来设置key 的过期时间,那么对过期的数据怎么处理呢?</p>
+<p>除了缓存服务器自带的缓存失效策略之外（Redis默认的有6中策略可供选择），我们还可以根据具体的业务需求进行自定义的缓存淘汰，常见的策略有两种：</p>
+<p>（1）定时去清理过期的缓存；</p>
+<p>（2）当有用户请求过来时，再判断这个请求所用到的缓存是否过期，过期的话就去底层系统得到新数据并更新缓存。</p>
+<p>两者各有优劣，第一种的缺点是维护大量缓存的key是比较麻烦的，第二种的缺点就是每次用户请求过来都要判断缓存失效，逻辑相对比较复杂！具体用哪种方案，大家可以根据自己的应用场景来权衡。</p>
+<p>缓存降级</p>
+<p>当访问量剧增、服务出现问题（如响应时间慢或不响应）或非核心服务影响到核心流程的性能时，仍然需要保证服务还是可用的，即使是有损服务。系统可以根据一些关键数据进行自动降级，也可以配置开关实现人工降级。</p>
+<p>降级的最终目的是保证核心服务可用，即使是有损的。而且有些服务是无法降级的（如加入购物车、结算）。</p>
+<p>在进行降级之前要对系统进行梳理，看看系统是不是可以丢卒保帅；从而梳理出哪些必须誓死保护，哪些可降级；比如可以参考日志级别设置预案：</p>
+<p>（1）一般：比如有些服务偶尔因为网络抖动或者服务正在上线而超时，可以自动降级；</p>
+<p>（2）警告：有些服务在一段时间内成功率有波动（如在95~100%之间），可以自动降级或人工降级，并发送告警；</p>
+<p>（3）错误：比如可用率低于90%，或者数据库连接池被打爆了，或者访问量突然猛增到系统能承受的最大阀值，此时可以根据情况自动降级或者人工降级；</p>
+<p>（4）严重错误：比如因为特殊原因数据错误了，此时需要紧急人工降级。</p>
+<p>缓存热点key</p>
+<p>使用缓存 + 过期时间的策略既可以加速数据读写，又保证数据的定期更新，这种模式基本能够满足绝大部分需求。但是有两个问题如果同时出现，可能就会对应用造成致命的危害：</p>
+<p>当前 key 是一个热点 key( 可能对应应用的热卖商品、热点新闻、热点评论等），并发量非常大。</p>
+<p>重建缓存不能在短时间完成，可能是一个复杂计算，例如复杂的 SQL、多次 IO、多个依赖等。</p>
+<p>在缓存失效的瞬间，有大量线程来重建缓存 ( 如下图)，造成后端负载加大，甚至可能会让应用崩溃。 </p>
+<p>热点 key 失效后大量线程重建缓存</p>
+<p>要解决这个问题也不是很复杂，但是不能为了解决这个问题给系统带来更多的麻烦，所以需要制定如下目标：</p>
+<p>减少重建缓存的次数</p>
+<p>数据尽可能一致</p>
+<p>较少的潜在危险</p>
+<p>1）互斥锁 (mutex key)</p>
+<p>此方法只允许一个线程重建缓存，其他线程等待重建缓存的线程执行完，重新从缓存获取数据即可，整个过程如图 ,使用互斥锁重建缓存 </p>
+<p>下面代码使用 Redis 的 setnx 命令实现上述功能，伪代码：</p>
+<p>String get(String key) { //从redis中获取key String value = redis.get(key); //如果value为空则开始重构缓存 if (value == null) { //只允许一个线程重构缓存，使用nx，并设置过期时间ex String mutexKey = “mutex:key” + key; if (redis.set(mutexKey, “1”, “ex 180”, “nx”)) { //从数据源获取数据 value = db.get(key); //回写redis并设置过期时间 redis.set(key, value, timeout); //删除mutexKey redis.del(mutexKey); } else { //其他线程睡眠50秒再重试 Thread.sleep(50); get(key); } } return value; }</p>
+<p>从 Redis 获取数据，如果值不为空，则直接返回值。</p>
+<p>如果 set(nx 和 ex) 结果为 true，说明此时没有其他线程重建缓存，那么当前线程执行缓存构建逻辑。</p>
+<p>如果 setnx(nx 和 ex) 结果为 false，说明此时已经有其他线程正在执行构建缓存的工作，那么当前线程将休息指定时间 (例如这里是 50 毫秒，取决于构建缓存的速度 ) 后，重新执行函数，直到获取到数据。</p>
+<p>2）永远不过期</p>
+<p>永远不过期”包含两层意思：</p>
+<p>从缓存层面来看，确实没有设置过期时间，所以不会出现热点 key 过期后产生的问题，也就是“物理”不过期。</p>
+<p>从功能层面来看，为每个 value 设置一个逻辑过期时间，当发现超过逻辑过期时间后，会使用单独的线程去构建缓存。</p>
+<p>” 永远不过期 ” 策略，整个过程如下图所示： </p>
+<p>从实战看，此方法有效杜绝了热点 key 产生的问题，但唯一不足的就是重构缓存期间，会出现数据不一致的情况，这取决于应用方是否容忍这种不一致。下面代码使用 Redis 进行模拟：</p>
+<p>String get(final String key) { V v = redis.get(key); String value = v.getValue(); //逻辑过期时间 final Long logicTimeout = v.getLogicTimeout(); //如果逻辑时间小于当前时间，开始重建缓存 if (logicTimeout &lt;= System.currentTimeMillis()) { final String mutexKey = “mutex:key” + key; if (redis.set(mutexKey, “1”, “ex 180”, “nx”)) { //重建缓存 threadPool.execute(new Runnable() { @Override public void run() { String dbValue = db.get(key); redis.set(key, (dbValue, newLogicTimeout)); redis.del(mutexKey); } }); } } return value; }</p>
+<p>作为一个并发量较大的应用，在使用缓存时有三个目标：第一，加快用户访问速度，提高用户体验。第二，降低后端负载，减少潜在的风险，保证系统平稳。第三，保证数据“尽可能”及时更新。下面将按照这三个维度对上述两种解决方案进行分析。</p>
+<p>互斥锁 (mutex key)：这种方案思路比较简单，但是存在一定的隐患，如果构建缓存过程出现问题或者时间较长，可能会存在死锁和线程池阻塞的风险，但是这种方法能够较好的降低后端存储负载并在一致性上做的比较好。</p>
+<p>” 永远不过期 “：这种方案由于没有设置真正的过期时间，实际上已经不存在热点 key 产生的一系列危害，但是会存在数据不一致的情况，同时代码复杂度会增大。<br>————————————————</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+
